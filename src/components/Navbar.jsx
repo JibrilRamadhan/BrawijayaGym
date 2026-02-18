@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Dumbbell, Menu, X, LogIn } from 'lucide-react';
+import { Menu, X, LogIn } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
-    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const location = useLocation();
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -17,13 +18,19 @@ const Navbar = () => {
     ];
 
     return (
-        <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
+        <motion.nav
+            initial={{ y: -100 }}
+            animate={{ y: 0 }}
+            className="absolute w-full z-50 top-0 bg-transparent py-5"
+        >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16 items-center">
+                <div className="flex justify-between items-center">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center space-x-2">
-                        <img src="/img/Logo.png" alt="" className='w-14 h-auto' />
-                        <span className="font-bold text-xl text-gray-900">Brawijaya Gym</span>
+                    <Link to="/" className="flex items-center space-x-3 group">
+                        <img src="/img/Logo.png" alt="" className='w-12 h-auto transition-transform group-hover:scale-110 brightness-0 invert' />
+                        <span className="text-display text-xl tracking-tight text-white">
+                            Brawijaya Gym
+                        </span>
                     </Link>
 
                     {/* Desktop Navigation */}
@@ -32,18 +39,30 @@ const Navbar = () => {
                             <Link
                                 key={link.path}
                                 to={link.path}
-                                className={`text-sm font-medium transition-colors hover:text-indigo-600 ${isActive(link.path) ? 'text-indigo-600' : 'text-gray-600'
+                                className={`text-sm font-medium transition-all relative hover:text-white hover:[text-shadow:0_0_10px_rgba(255,255,255,0.8)] ${isActive(link.path) ? 'text-white' : 'text-gray-300'
                                     }`}
                             >
                                 {link.name}
+                                {isActive(link.path) && (
+                                    <motion.span
+                                        layoutId="underline"
+                                        className="absolute left-0 top-full block h-0.5 w-full bg-white mt-1"
+                                    />
+                                )}
                             </Link>
                         ))}
                         <Link
                             to="/login"
-                            className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-sm hover:shadow-md"
+                            className="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-full text-black bg-white hover:bg-gray-200 hover:shadow-lg hover:-translate-y-0.5 transition-all shadow-md"
                         >
                             <LogIn className="w-4 h-4 mr-2" />
                             Member Login
+                        </Link>
+                        <Link
+                            to="/register"
+                            className="inline-flex items-center justify-center px-5 py-2.5 border-2 border-orange-600 text-sm font-bold rounded-full text-white bg-orange-600 hover:bg-orange-700 hover:border-orange-700 transition-all shadow-md"
+                        >
+                            Join Now
                         </Link>
                     </div>
 
@@ -51,7 +70,7 @@ const Navbar = () => {
                     <div className="md:hidden flex items-center">
                         <button
                             onClick={toggleMenu}
-                            className="text-gray-600 hover:text-gray-900 focus:outline-none"
+                            className="text-gray-300 hover:text-white focus:outline-none p-2"
                         >
                             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                         </button>
@@ -60,36 +79,52 @@ const Navbar = () => {
             </div>
 
             {/* Mobile Menu */}
-            {isMenuOpen && (
-                <div className="md:hidden absolute w-full bg-white border-b border-gray-100 shadow-lg">
-                    <div className="px-4 pt-2 pb-4 space-y-2">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.path}
-                                to={link.path}
-                                onClick={() => setIsMenuOpen(false)}
-                                className={`block px-3 py-2 rounded-md text-base font-medium ${isActive(link.path)
-                                    ? 'text-indigo-600 bg-indigo-50'
-                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                                    }`}
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
-                        <div className="pt-2">
-                            <Link
-                                to="/login"
-                                onClick={() => setIsMenuOpen(false)}
-                                className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700"
-                            >
-                                <LogIn className="w-4 h-4 mr-2" />
-                                Member Login
-                            </Link>
+            <AnimatePresence>
+                {isMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="md:hidden bg-black/95 backdrop-blur-md border-b border-white/10 shadow-xl overflow-hidden"
+                    >
+                        <div className="px-4 pt-4 pb-6 space-y-3">
+                            {navLinks.map((link) => (
+                                <Link
+                                    key={link.path}
+                                    to={link.path}
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className={`block px-4 py-3 rounded-xl text-base font-medium transition-all ${isActive(link.path)
+                                        ? 'text-white bg-white/5'
+                                        : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                        }`}
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                            <div className="pt-2">
+                                <Link
+                                    to="/login"
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-orange-600 hover:bg-orange-700 shadow-lg"
+                                >
+                                    <LogIn className="w-4 h-4 mr-2" />
+                                    Member Login
+                                </Link>
+                            </div>
+                            <div className="pt-2">
+                                <Link
+                                    to="/register"
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-bold rounded-xl text-white bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 shadow-lg"
+                                >
+                                    Join Now
+                                </Link>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            )}
-        </nav>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </motion.nav>
     );
 };
 

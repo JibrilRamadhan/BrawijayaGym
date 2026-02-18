@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Dumbbell, Lock, Mail, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -19,94 +20,130 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
-            <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl border border-gray-100">
-                <div className="text-center">
-                    <Link to="/" className="inline-flex items-center justify-center space-x-2">
-                        <img src="/img/Logo.png" alt="logo" className='w-24 h-auto' />
-                    </Link>
-                    <h2 className="mt-2 text-3xl font-extrabold text-gray-900">
-                        Member Area
-                    </h2>
-                    <p className="mt-2 text-sm text-gray-600">
-                        Masuk untuk akses jadwal dan membership
-                    </p>
+        <div className="min-h-screen flex bg-white font-sans">
+            {/* Left Side - Image/Brand */}
+            <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gray-900">
+                <div className="absolute inset-0 bg-orange-900/40 mix-blend-multiply z-10"></div>
+                <img
+                    src="https://images.unsplash.com/photo-1540497077202-7c8a33801524?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
+                    alt="Gym Motivation"
+                    className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="relative z-20 flex flex-col justify-between h-full p-16 text-white">
+                    <div>
+                        <Link to="/" className="flex items-center space-x-3 group w-fit">
+                            <motion.div
+                                whileHover={{ rotate: -10 }}
+                                className="bg-white/10 backdrop-blur-md p-2 rounded-lg"
+                            >
+                                <img src="/img/Logo.png" alt="logo" className='w-10 h-auto invert brightness-0' />
+                            </motion.div>
+                            <span className="font-bold text-xl tracking-tight">Brawijaya Gym</span>
+                        </Link>
+                    </div>
+                    <div className="space-y-6">
+                        <blockquote className="text-3xl font-bold leading-tight">
+                            "Discipline is the bridge between goals and accomplishment."
+                        </blockquote>
+                        <p className="text-orange-200 text-lg">Jim Rohn</p>
+                    </div>
+                    <div className="flex space-x-2">
+                        <div className="w-12 h-1 bg-white rounded-full"></div>
+                        <div className="w-4 h-1 bg-white/30 rounded-full"></div>
+                        <div className="w-4 h-1 bg-white/30 rounded-full"></div>
+                    </div>
                 </div>
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    <input type="hidden" name="remember" value="true" />
-                    <div className="space-y-4">
-                        <div>
-                            <label htmlFor="email-address" className="block text-sm font-medium text-gray-700">
-                                Email saya
-                            </label>
-                            <div className="mt-1 relative rounded-md shadow-sm">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Mail className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                </div>
-                                <input
-                                    id="email-address"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="email"
-                                    required
-                                    className="block w-full pl-10 sm:text-sm border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-2.5 bg-gray-50 border"
-                                    placeholder="member@brawijaya.ac.id"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                            </div>
-                        </div>
-                        <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                                Password
-                            </label>
-                            <div className="mt-1 relative rounded-md shadow-sm">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Lock className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                                </div>
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type={showPassword ? "text" : "password"}
-                                    autoComplete="current-password"
-                                    required
-                                    className="block w-full pl-10 pr-10 sm:text-sm border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-2.5 bg-gray-50 border"
-                                    placeholder="••••••••"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
-                                <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
-                                    {showPassword ? <EyeOff className="h-5 w-5 text-gray-400" /> : <Eye className="h-5 w-5 text-gray-400" />}
-                                </div>
-                            </div>
-                        </div>
+            </div>
+
+            {/* Right Side - Form */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-16 relative bg-black">
+                <Link to="/" className="absolute top-8 left-8 lg:hidden text-gray-400 hover:text-white transition-colors">
+                    <ArrowLeft className="w-6 h-6" />
+                </Link>
+
+                <div className="w-full max-w-md space-y-10">
+                    <div className="text-center lg:text-left">
+                        <h2 className="text-4xl font-display font-black text-white uppercase tracking-tighter">
+                            Welcome Back
+                        </h2>
+                        <p className="mt-3 text-lg text-gray-400">
+                            Masuk untuk mengakses jadwal dan membership Anda.
+                        </p>
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                        <div className="space-y-5">
+                            <div>
+                                <label htmlFor="email-address" className="block text-sm font-bold uppercase tracking-wide text-gray-400 mb-2">
+                                    Email
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <Mail className="h-5 w-5 text-gray-500" />
+                                    </div>
+                                    <input
+                                        id="email-address"
+                                        name="email"
+                                        type="email"
+                                        autoComplete="email"
+                                        required
+                                        className="block w-full pl-11 pr-4 py-3 border-2 border-zinc-800 rounded-none leading-5 bg-zinc-900 placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-0 sm:text-sm transition-all text-white font-medium hover:border-zinc-700"
+                                        placeholder="namanda@example.com"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <div className="flex items-center justify-between mb-2">
+                                    <label htmlFor="password" className="block text-sm font-bold uppercase tracking-wide text-gray-400">
+                                        Password
+                                    </label>
+                                    <div className="text-sm">
+                                        <a href="#" className="font-bold text-orange-500 hover:text-orange-400 uppercase text-xs tracking-wider">
+                                            Lupa password?
+                                        </a>
+                                    </div>
+                                </div>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <Lock className="h-5 w-5 text-gray-500" />
+                                    </div>
+                                    <input
+                                        id="password"
+                                        name="password"
+                                        type={showPassword ? "text" : "password"}
+                                        autoComplete="current-password"
+                                        required
+                                        className="block w-full pl-11 pr-12 py-3 border-2 border-zinc-800 rounded-none leading-5 bg-zinc-900 placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-0 sm:text-sm transition-all text-white font-medium hover:border-zinc-700"
+                                        placeholder="••••••••"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                    <div className="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
+                                        {showPassword ? <EyeOff className="h-5 w-5 text-gray-500 hover:text-gray-300" /> : <Eye className="h-5 w-5 text-gray-500 hover:text-gray-300" />}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="flex items-center">
                             <input
                                 id="remember-me"
                                 name="remember-me"
                                 type="checkbox"
-                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                className="h-4 w-4 text-orange-500 focus:ring-orange-500 border-zinc-700 rounded-none cursor-pointer bg-zinc-900"
                             />
-                            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                            <label htmlFor="remember-me" className="ml-2 block text-sm font-medium text-gray-400 cursor-pointer hover:text-white transition-colors">
                                 Ingat saya
                             </label>
                         </div>
 
-                        <div className="text-sm">
-                            <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                                Lupa password?
-                            </a>
-                        </div>
-                    </div>
-
-                    <div>
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                            className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-base font-black uppercase tracking-widest text-black bg-white hover:bg-gray-200 focus:outline-none transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-none rounded-none"
                         >
                             {isLoading ? (
                                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -114,14 +151,13 @@ const LoginPage = () => {
                                 "Masuk Member"
                             )}
                         </button>
-                    </div>
-                </form>
-                <div className="text-center mt-4">
-                    <p className="text-sm text-gray-600">
+                    </form>
+
+                    <p className="mt-8 text-center text-sm text-gray-500">
                         Belum jadi member?{' '}
-                        <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                        <Link to="/register" className="font-bold text-white border-b-2 border-white hover:text-gray-300 hover:border-gray-300 pb-0.5 transition-all uppercase tracking-wide">
                             Daftar sekarang
-                        </a>
+                        </Link>
                     </p>
                 </div>
             </div>
