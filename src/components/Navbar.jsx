@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, LogIn } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, LogIn, LogOut, LayoutDashboard } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
+    const { isAuthenticated, user, logout } = useAuth();
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -13,9 +16,14 @@ const Navbar = () => {
 
     const navLinks = [
         { name: 'Beranda', path: '/' },
-        { name: 'Membership', path: '/membership' },
+        { name: 'Membership', path: '/register' },
         { name: 'Kelas', path: '/classes' },
     ];
+
+    const handleLogout = async () => {
+        await logout();
+        navigate('/');
+    };
 
     return (
         <motion.nav
@@ -51,19 +59,41 @@ const Navbar = () => {
                                 )}
                             </Link>
                         ))}
-                        <Link
-                            to="/login"
-                            className="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-full text-black bg-white hover:bg-gray-200 hover:shadow-lg hover:-translate-y-0.5 transition-all shadow-md"
-                        >
-                            <LogIn className="w-4 h-4 mr-2" />
-                            Member Login
-                        </Link>
-                        <Link
-                            to="/register"
-                            className="inline-flex items-center justify-center px-5 py-2.5 border-2 border-orange-600 text-sm font-bold rounded-full text-white bg-orange-600 hover:bg-orange-700 hover:border-orange-700 transition-all shadow-md"
-                        >
-                            Join Now
-                        </Link>
+
+                        {isAuthenticated ? (
+                            <>
+                                <Link
+                                    to="/dashboard"
+                                    className="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-full text-black bg-white hover:bg-gray-200 hover:shadow-lg hover:-translate-y-0.5 transition-all shadow-md"
+                                >
+                                    <LayoutDashboard className="w-4 h-4 mr-2" />
+                                    Dashboard
+                                </Link>
+                                <button
+                                    onClick={handleLogout}
+                                    className="inline-flex items-center justify-center px-5 py-2.5 border-2 border-zinc-600 text-sm font-medium rounded-full text-gray-300 hover:text-white hover:border-white transition-all"
+                                >
+                                    <LogOut className="w-4 h-4 mr-2" />
+                                    Logout
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <Link
+                                    to="/login"
+                                    className="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-full text-black bg-white hover:bg-gray-200 hover:shadow-lg hover:-translate-y-0.5 transition-all shadow-md"
+                                >
+                                    <LogIn className="w-4 h-4 mr-2" />
+                                    Member Login
+                                </Link>
+                                <Link
+                                    to="/register"
+                                    className="inline-flex items-center justify-center px-5 py-2.5 border-2 border-orange-600 text-sm font-bold rounded-full text-white bg-orange-600 hover:bg-orange-700 hover:border-orange-700 transition-all shadow-md"
+                                >
+                                    Join Now
+                                </Link>
+                            </>
+                        )}
                     </div>
 
                     {/* Mobile menu button */}
@@ -101,25 +131,52 @@ const Navbar = () => {
                                     {link.name}
                                 </Link>
                             ))}
-                            <div className="pt-2">
-                                <Link
-                                    to="/login"
-                                    onClick={() => setIsMenuOpen(false)}
-                                    className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-orange-600 hover:bg-orange-700 shadow-lg"
-                                >
-                                    <LogIn className="w-4 h-4 mr-2" />
-                                    Member Login
-                                </Link>
-                            </div>
-                            <div className="pt-2">
-                                <Link
-                                    to="/register"
-                                    onClick={() => setIsMenuOpen(false)}
-                                    className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-bold rounded-xl text-white bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 shadow-lg"
-                                >
-                                    Join Now
-                                </Link>
-                            </div>
+
+                            {isAuthenticated ? (
+                                <>
+                                    <div className="pt-2">
+                                        <Link
+                                            to="/dashboard"
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-orange-600 hover:bg-orange-700 shadow-lg"
+                                        >
+                                            <LayoutDashboard className="w-4 h-4 mr-2" />
+                                            Dashboard
+                                        </Link>
+                                    </div>
+                                    <div className="pt-2">
+                                        <button
+                                            onClick={() => { handleLogout(); setIsMenuOpen(false); }}
+                                            className="w-full flex items-center justify-center px-4 py-3 border border-zinc-700 text-base font-medium rounded-xl text-gray-300 hover:text-white hover:border-white transition-all"
+                                        >
+                                            <LogOut className="w-4 h-4 mr-2" />
+                                            Logout
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="pt-2">
+                                        <Link
+                                            to="/login"
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-orange-600 hover:bg-orange-700 shadow-lg"
+                                        >
+                                            <LogIn className="w-4 h-4 mr-2" />
+                                            Member Login
+                                        </Link>
+                                    </div>
+                                    <div className="pt-2">
+                                        <Link
+                                            to="/register"
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-bold rounded-xl text-white bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 shadow-lg"
+                                        >
+                                            Join Now
+                                        </Link>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </motion.div>
                 )}

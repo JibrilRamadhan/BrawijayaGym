@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from "framer-motion";
 import { Quote, Star } from "lucide-react";
+import { Link } from 'react-router-dom';
 
 // 1. Data Dummy Diperbanyak agar Loop terlihat mulus
 const testimonials = [
@@ -66,7 +67,10 @@ const MarqueeRow = ({ items, direction = "left", speed = 20 }) => {
 // 4. MAIN SECTION
 const TestimonialSection = () => {
     return (
-        <section className="py-24 md:py-32 bg-black border-t border-white/10 overflow-hidden relative">
+        <section className="py-24 md:py-32 bg-black overflow-hidden relative">
+            {/* Smooth transition gradients */}
+            <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-black to-transparent z-[1] pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-black to-transparent z-[1] pointer-events-none"></div>
 
             {/* Background Elements */}
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-orange-900/20 via-black to-black opacity-40 pointer-events-none"></div>
@@ -95,9 +99,9 @@ const TestimonialSection = () => {
 
             <div className="mt-16 text-center relative z-10">
                 <p className="text-gray-500 text-sm mb-6">Join 1,000+ members transforming their lives</p>
-                <button className="px-8 py-3 bg-white text-black font-bold uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-colors skew-x-[-10deg]">
-                    <span className="skew-x-[10deg]">Read More Stories</span>
-                </button>
+                <Link to="/about" className="inline-block px-8 py-3 bg-white text-black font-bold uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-colors skew-x-[-10deg]">
+                    <span className="skew-x-[10deg] block">Read More Stories</span>
+                </Link>
             </div>
         </section>
     );

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Check, X } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const PricingCard = ({ tier, price, desc, features, notIncluded = [], isPopular = false, isYearly = false }) => {
 
@@ -59,9 +60,9 @@ const PricingCard = ({ tier, price, desc, features, notIncluded = [], isPopular 
                 ))}
             </ul>
 
-            <button className={`w-full py-4 font-bold uppercase tracking-wider text-sm transition-all duration-300 border ${isPopular ? 'bg-orange-600 border-orange-600 text-white hover:bg-orange-700' : 'bg-transparent border-white text-white hover:bg-white hover:text-black'}`}>
+            <Link to="/register" className={`w-full py-4 font-bold uppercase tracking-wider text-sm transition-all duration-300 border text-center block ${isPopular ? 'bg-orange-600 border-orange-600 text-white hover:bg-orange-700' : 'bg-transparent border-white text-white hover:bg-white hover:text-black'}`}>
                 Choose {tier}
-            </button>
+            </Link>
         </div>
     );
 };

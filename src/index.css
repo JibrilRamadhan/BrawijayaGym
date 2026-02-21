@@ -11,15 +11,18 @@
         scroll-behavior: smooth;
     }
 
+    html,
     body {
-        @apply font-sans antialiased text-white bg-black select-none;
         -ms-overflow-style: none;
         /* IE and Edge */
         scrollbar-width: none;
         /* Firefox */
     }
 
-    body::-webkit-scrollbar {
+    /* Menyembunyikan scrollbar di html, body, dan SEMUA elemen (opsional) */
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    *::-webkit-scrollbar {
         display: none;
     }
 
@@ -87,5 +90,15 @@
 
     .btn-primary {
         @apply inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-bold uppercase tracking-wider rounded-none text-white bg-black hover:bg-gray-800 transition-all;
+    }
+}
+
+@keyframes shrink {
+    from {
+        width: 100%;
+    }
+
+    to {
+        width: 0%;
     }
 }
