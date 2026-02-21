@@ -1,22 +1,39 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 const LoginPage = () => {
-    const [email, setEmail] = useState('');
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { login } = useAuth();
+    const toast = useToast();
+    const [loginValue, setLoginValue] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
 
-    const handleSubmit = (e) => {
+    const from = location.state?.from?.pathname || '/dashboard';
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        // Simulate login delay
-        setTimeout(() => {
+        setError('');
+
+        try {
+            const res = await login(loginValue, password);
+            toast.success(`Selamat datang kembali, ${res.user?.username || 'Member'}! 🎉`);
+            navigate(from, { replace: true });
+        } catch (err) {
+            const msg = err.response?.data?.message || 'Login gagal. Periksa kembali email/username dan password Anda.';
+            setError(msg);
+            toast.error(msg);
+        } finally {
             setIsLoading(false);
-            alert('Login Member berhasil (simulasi)!');
-        }, 1500);
+        }
     };
 
     return (
@@ -71,26 +88,36 @@ const LoginPage = () => {
                         </p>
                     </div>
 
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 text-sm"
+                        >
+                            {error}
+                        </motion.div>
+                    )}
+
                     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                         <div className="space-y-5">
                             <div>
-                                <label htmlFor="email-address" className="block text-sm font-bold uppercase tracking-wide text-gray-400 mb-2">
-                                    Email
+                                <label htmlFor="login-field" className="block text-sm font-bold uppercase tracking-wide text-gray-400 mb-2">
+                                    Email atau Username
                                 </label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                         <Mail className="h-5 w-5 text-gray-500" />
                                     </div>
                                     <input
-                                        id="email-address"
-                                        name="email"
-                                        type="email"
-                                        autoComplete="email"
+                                        id="login-field"
+                                        name="login"
+                                        type="text"
+                                        autoComplete="username"
                                         required
-                                        className="block w-full pl-11 pr-4 py-3 border-2 border-zinc-800 rounded-none leading-5 bg-zinc-900 placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-0 sm:text-sm transition-all text-white font-medium hover:border-zinc-700"
-                                        placeholder="namanda@example.com"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="block w-full pl-11 pr-4 py-3.5 border-2 border-zinc-800 rounded-none leading-5 bg-zinc-900 placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-0 sm:text-sm transition-all text-white font-medium hover:border-zinc-700"
+                                        placeholder="email atau username"
+                                        value={loginValue}
+                                        onChange={(e) => setLoginValue(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -100,11 +127,6 @@ const LoginPage = () => {
                                     <label htmlFor="password" className="block text-sm font-bold uppercase tracking-wide text-gray-400">
                                         Password
                                     </label>
-                                    <div className="text-sm">
-                                        <a href="#" className="font-bold text-orange-500 hover:text-orange-400 uppercase text-xs tracking-wider">
-                                            Lupa password?
-                                        </a>
-                                    </div>
                                 </div>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -116,7 +138,7 @@ const LoginPage = () => {
                                         type={showPassword ? "text" : "password"}
                                         autoComplete="current-password"
                                         required
-                                        className="block w-full pl-11 pr-12 py-3 border-2 border-zinc-800 rounded-none leading-5 bg-zinc-900 placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-0 sm:text-sm transition-all text-white font-medium hover:border-zinc-700"
+                                        className="block w-full pl-11 pr-12 py-3.5 border-2 border-zinc-800 rounded-none leading-5 bg-zinc-900 placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-0 sm:text-sm transition-all text-white font-medium hover:border-zinc-700"
                                         placeholder="••••••••"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
@@ -148,13 +170,13 @@ const LoginPage = () => {
                             {isLoading ? (
                                 <Loader2 className="w-5 h-5 animate-spin" />
                             ) : (
-                                "Masuk Member"
+                                "Masuk"
                             )}
                         </button>
                     </form>
 
                     <p className="mt-8 text-center text-sm text-gray-500">
-                        Belum jadi member?{' '}
+                        Belum punya akun?{' '}
                         <Link to="/register" className="font-bold text-white border-b-2 border-white hover:text-gray-300 hover:border-gray-300 pb-0.5 transition-all uppercase tracking-wide">
                             Daftar sekarang
                         </Link>
