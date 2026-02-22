@@ -47,14 +47,10 @@ const RegisterPage = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        emailConfirm: '',
         phone: '',
+        alamat: '', // newly requested
+        jenis_kelamin: '', // moved from Data Member to main form
         days: 1,
-        // Member-specific fields
-        first_name: '',
-        last_name: '',
-        middle_name: '',
-        jenis_kelamin: '',
     });
 
     // Success Data
@@ -89,18 +85,22 @@ const RegisterPage = () => {
 
     const handleRegisterSubmit = (e) => {
         e.preventDefault();
-        if (formData.email !== formData.emailConfirm) {
-            setError("Email tidak sama! Silakan ketik ulang.");
+
+        if (!formData.name.trim()) {
+            setError("Nama lengkap wajib diisi.");
             return;
         }
+
+        if (!formData.alamat.trim()) {
+            setError("Alamat wajib diisi.");
+            return;
+        }
+
         if (isMemberPlan && !formData.jenis_kelamin) {
             setError("Jenis kelamin wajib dipilih untuk paket Member.");
             return;
         }
-        if (isMemberPlan && !formData.name.trim()) {
-            setError("Nama lengkap wajib diisi.");
-            return;
-        }
+
         setError('');
         setStep(3);
     };
@@ -130,6 +130,7 @@ const RegisterPage = () => {
                 last_name: lastName,
                 middle_name: '',
                 jenis_kelamin: formData.jenis_kelamin,
+                alamat: formData.alamat, // Pass to backend, if backend accommodates it later.
             } : null;
 
             const joinRes = await subscriptionService.joinPlan(
@@ -338,36 +339,27 @@ const RegisterPage = () => {
                                     <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Email</label>
                                     <input name="email" type="email" required className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none" placeholder="email@example.com" value={formData.email} onChange={handleChange} />
                                 </div>
-                                {/* Konfirmasi Email — always required */}
+                                {/* Alamat — replaces Konfirmasi Email, always required */}
                                 <div>
-                                    <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Konfirmasi Email</label>
-                                    <input name="emailConfirm" type="email" required className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none" placeholder="Ketik ulang email" value={formData.emailConfirm} onChange={handleChange} />
-                                    {formData.emailConfirm && formData.email !== formData.emailConfirm && (
-                                        <p className="text-red-400 text-xs mt-1">Email tidak cocok</p>
-                                    )}
+                                    <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Alamat</label>
+                                    <textarea name="alamat" required rows={2} className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none resize-none" placeholder="Alamat lengkap" value={formData.alamat} onChange={handleChange}></textarea>
                                 </div>
                                 {/* No. Telepon — always required */}
                                 <div>
                                     <label className="block text-sm font-bold uppercase text-gray-400 mb-2">No. Telepon</label>
                                     <input name="phone" type="tel" required className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none" placeholder="08xxxxxxxxxx" value={formData.phone} onChange={handleChange} />
                                 </div>
+                                {/* Jenis Kelamin — now combined with the upper form */}
+                                <div>
+                                    <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Jenis Kelamin</label>
+                                    <select name="jenis_kelamin" required className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none appearance-none" value={formData.jenis_kelamin} onChange={handleChange}>
+                                        <option value="" disabled>Pilih...</option>
+                                        <option value="L">Laki-laki</option>
+                                        <option value="P">Perempuan</option>
+                                    </select>
+                                </div>
 
-                                {/* Member-specific fields */}
-                                {isMemberPlan && (
-                                    <>
-                                        <div className="border-t border-zinc-700 pt-5 mt-5">
-                                            <p className="text-xs font-bold uppercase tracking-widest text-orange-400 mb-4">Data Member</p>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Jenis Kelamin *</label>
-                                            <select name="jenis_kelamin" required className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none appearance-none" value={formData.jenis_kelamin} onChange={handleChange}>
-                                                <option value="" disabled>Pilih...</option>
-                                                <option value="L">Laki-laki</option>
-                                                <option value="P">Perempuan</option>
-                                            </select>
-                                        </div>
-                                    </>
-                                )}
+                                {/* Member-specific fields section removed entirely as per user request */}
 
                                 {/* Jumlah Hari — only for harian */}
                                 {selectedPlan?.type === 'harian' && (
@@ -421,19 +413,16 @@ const RegisterPage = () => {
                                     <span className="text-gray-400">Telepon</span>
                                     <span>{formData.phone}</span>
                                 </div>
+                                <div className="flex justify-between mb-2">
+                                    <span className="text-gray-400">Alamat</span>
+                                    <span className="text-right max-w-[60%]">{formData.alamat}</span>
+                                </div>
+                                <div className="flex justify-between mb-2">
+                                    <span className="text-gray-400">Jenis Kelamin</span>
+                                    <span>{formData.jenis_kelamin === 'L' ? 'Laki-laki' : formData.jenis_kelamin === 'P' ? 'Perempuan' : '-'}</span>
+                                </div>
 
-                                {/* Member-specific summary */}
-                                {isMemberPlan && (
-                                    <>
-                                        <div className="border-t border-zinc-700 mt-3 pt-3">
-                                            <p className="text-xs font-bold uppercase text-orange-400 mb-2">Data Member</p>
-                                        </div>
-                                        <div className="flex justify-between mb-2">
-                                            <span className="text-gray-400">Jenis Kelamin</span>
-                                            <span>{formData.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}</span>
-                                        </div>
-                                    </>
-                                )}
+                                {/* Separate Member-specific summary removed entirely */}
 
                                 {/* Password info */}
                                 {isMemberPlan && (
