@@ -62,7 +62,7 @@ const playFailSound = () => {
 const PaymentStatusPage = () => {
     const { uuid } = useParams();
     const navigate = useNavigate();
-    const { loadUser } = useAuth();
+    const { loadUser, user } = useAuth();
     const [payment, setPayment] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -122,8 +122,8 @@ const PaymentStatusPage = () => {
             <DashboardLayout>
                 <div className="max-w-lg mx-auto py-20">
                     <p className="text-red-400 mb-4">{error}</p>
-                    <Link to="/dashboard" className="text-gray-500 hover:text-white text-sm flex items-center gap-2">
-                        <ArrowLeft className="w-4 h-4" /> Dashboard
+                    <Link to={user?.is_guest ? "/" : "/dashboard"} className="text-gray-500 hover:text-white text-sm flex items-center gap-2">
+                        <ArrowLeft className="w-4 h-4" /> {user?.is_guest ? "Beranda" : "Dashboard"}
                     </Link>
                 </div>
             </DashboardLayout>
@@ -155,8 +155,8 @@ const PaymentStatusPage = () => {
     return (
         <DashboardLayout>
             <div className="max-w-2xl mx-auto">
-                <Link to="/dashboard" className="text-gray-600 hover:text-white text-sm flex items-center gap-2 mb-10">
-                    <ArrowLeft className="w-4 h-4" /> Dashboard
+                <Link to={user?.is_guest ? "/" : "/dashboard"} className="text-gray-600 hover:text-white text-sm flex items-center gap-2 mb-10">
+                    <ArrowLeft className="w-4 h-4" /> {user?.is_guest ? "Beranda" : "Dashboard"}
                 </Link>
 
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
@@ -247,10 +247,10 @@ const PaymentStatusPage = () => {
                             </button>
                         )}
                         <Link
-                            to="/dashboard"
+                            to={user?.is_guest ? "/" : "/dashboard"}
                             className="px-6 py-3 bg-white text-black text-sm font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors"
                         >
-                            {isSuccess && isMember ? 'Ke Dashboard Member' : 'Dashboard'}
+                            {user?.is_guest ? 'Kembali ke Beranda' : (isSuccess && isMember ? 'Ke Dashboard Member' : 'Dashboard')}
                         </Link>
                     </div>
                 </motion.div>

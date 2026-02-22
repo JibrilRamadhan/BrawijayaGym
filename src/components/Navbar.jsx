@@ -62,13 +62,15 @@ const Navbar = () => {
 
                         {isAuthenticated ? (
                             <>
-                                <Link
-                                    to="/dashboard"
-                                    className="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-full text-black bg-white hover:bg-gray-200 hover:shadow-lg hover:-translate-y-0.5 transition-all shadow-md"
-                                >
-                                    <LayoutDashboard className="w-4 h-4 mr-2" />
-                                    Dashboard
-                                </Link>
+                                {!user?.is_guest && (
+                                    <Link
+                                        to="/dashboard"
+                                        className="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-full text-black bg-white hover:bg-gray-200 hover:shadow-lg hover:-translate-y-0.5 transition-all shadow-md"
+                                    >
+                                        <LayoutDashboard className="w-4 h-4 mr-2" />
+                                        Dashboard
+                                    </Link>
+                                )}
                                 <button
                                     onClick={handleLogout}
                                     className="inline-flex items-center justify-center px-5 py-2.5 border-2 border-zinc-600 text-sm font-medium rounded-full text-gray-300 hover:text-white hover:border-white transition-all"
@@ -134,16 +136,18 @@ const Navbar = () => {
 
                             {isAuthenticated ? (
                                 <>
-                                    <div className="pt-2">
-                                        <Link
-                                            to="/dashboard"
-                                            onClick={() => setIsMenuOpen(false)}
-                                            className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-orange-600 hover:bg-orange-700 shadow-lg"
-                                        >
-                                            <LayoutDashboard className="w-4 h-4 mr-2" />
-                                            Dashboard
-                                        </Link>
-                                    </div>
+                                    {!user?.is_guest && (
+                                        <div className="pt-2">
+                                            <Link
+                                                to="/dashboard"
+                                                onClick={() => setIsMenuOpen(false)}
+                                                className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-orange-600 hover:bg-orange-700 shadow-lg"
+                                            >
+                                                <LayoutDashboard className="w-4 h-4 mr-2" />
+                                                Dashboard
+                                            </Link>
+                                        </div>
+                                    )}
                                     <div className="pt-2">
                                         <button
                                             onClick={() => { handleLogout(); setIsMenuOpen(false); }}

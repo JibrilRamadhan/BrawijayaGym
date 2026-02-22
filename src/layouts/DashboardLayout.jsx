@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LayoutDashboard, CreditCard, LogOut, Home } from 'lucide-react';
 
@@ -7,6 +7,11 @@ const DashboardLayout = ({ children }) => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+
+    // Redirect guests (Trial/Harian) away from dashboard
+    if (user?.is_guest) {
+        return <Navigate to="/" replace />;
+    }
 
     const handleLogout = async () => {
         await logout();

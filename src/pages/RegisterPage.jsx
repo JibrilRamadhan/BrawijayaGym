@@ -543,10 +543,10 @@ const RegisterPage = () => {
                                 </div>
 
                                 <button
-                                    onClick={() => navigate(isMemberPlan ? '/login' : '/dashboard')}
+                                    onClick={() => navigate(isMemberPlan ? '/login' : '/')}
                                     className="w-full mt-4 py-3 bg-black text-white font-bold uppercase hover:bg-gray-800 transition-colors"
                                 >
-                                    {isMemberPlan ? 'Login ke Dashboard' : 'Masuk ke Dashboard'}
+                                    {isMemberPlan ? 'Login ke Dashboard' : 'Kembali ke Beranda'}
                                 </button>
                             </div>
                         </div>

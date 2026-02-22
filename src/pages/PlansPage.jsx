@@ -90,7 +90,7 @@ const PlansPage = () => {
 
             if (selectedPlan.type === 'trial') {
                 toast.success('Trial aktif!');
-                navigate('/dashboard');
+                navigate('/');
                 return;
             }
 
