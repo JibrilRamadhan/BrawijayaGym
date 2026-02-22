@@ -8,8 +8,8 @@ const DashboardLayout = ({ children }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Redirect guests (Trial/Harian) away from dashboard
-    if (user?.is_guest) {
+    // Redirect guests (Trial/Harian) away from dashboard, EXCEPT when viewing payment receipt
+    if (user?.is_guest && !location.pathname.startsWith('/payment-status')) {
         return <Navigate to="/" replace />;
     }
 

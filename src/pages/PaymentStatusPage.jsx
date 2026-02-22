@@ -155,8 +155,8 @@ const PaymentStatusPage = () => {
     return (
         <DashboardLayout>
             <div className="max-w-2xl mx-auto">
-                <Link to={user?.is_guest ? "/" : "/dashboard"} className="text-gray-600 hover:text-white text-sm flex items-center gap-2 mb-10">
-                    <ArrowLeft className="w-4 h-4" /> {user?.is_guest ? "Beranda" : "Dashboard"}
+                <Link to={!isMember ? "/" : "/dashboard"} className="text-gray-600 hover:text-white text-sm flex items-center gap-2 mb-10">
+                    <ArrowLeft className="w-4 h-4" /> {!isMember ? "Beranda" : "Dashboard"}
                 </Link>
 
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
@@ -247,10 +247,10 @@ const PaymentStatusPage = () => {
                             </button>
                         )}
                         <Link
-                            to={user?.is_guest ? "/" : "/dashboard"}
+                            to={!isMember ? "/" : "/dashboard"}
                             className="px-6 py-3 bg-white text-black text-sm font-bold uppercase tracking-wider hover:bg-gray-200 transition-colors"
                         >
-                            {user?.is_guest ? 'Kembali ke Beranda' : (isSuccess && isMember ? 'Ke Dashboard Member' : 'Dashboard')}
+                            {!isMember ? 'Kembali ke Beranda' : (isSuccess ? 'Ke Dashboard Member' : 'Dashboard')}
                         </Link>
                     </div>
                 </motion.div>
