@@ -14,6 +14,7 @@ const subscriptionService = {
             payload.last_name = memberData.last_name;
             payload.middle_name = memberData.middle_name;
             payload.jenis_kelamin = memberData.jenis_kelamin;
+            payload.alamat = memberData.alamat;
         }
         const response = await api.post('/subscriptions/join', payload);
         return response.data;
