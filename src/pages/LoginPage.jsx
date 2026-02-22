@@ -42,7 +42,7 @@ const LoginPage = () => {
             <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gray-900">
                 <div className="absolute inset-0 bg-orange-900/40 mix-blend-multiply z-10"></div>
                 <img
-                    src="https://images.unsplash.com/photo-1540497077202-7c8a33801524?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
+                    src="../img/cardio.jpg"
                     alt="Gym Motivation"
                     className="absolute inset-0 w-full h-full object-cover"
                 />
