@@ -164,7 +164,7 @@ const RegisterPage = () => {
 
             if (snapToken && window.snap) {
                 window.snap.pay(snapToken, {
-                    onSuccess: () => navigate(`/payment-status/${paymentUuid}`),
+                    onSuccess: () => navigate(`/payment-status/${paymentUuid}?instant=1`),
                     onPending: () => navigate(`/payment-status/${paymentUuid}`),
                     onError: () => navigate(`/payment-status/${paymentUuid}`),
                     onClose: () => {

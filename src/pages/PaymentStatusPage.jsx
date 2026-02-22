@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle, XCircle, Clock, Loader2, ArrowLeft, RefreshCw, ArrowRight, Volume2 } from 'lucide-react';
 import paymentService from '../services/paymentService';
@@ -62,6 +62,7 @@ const playFailSound = () => {
 const PaymentStatusPage = () => {
     const { uuid } = useParams();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { loadUser, user } = useAuth();
     const [payment, setPayment] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -101,11 +102,17 @@ const PaymentStatusPage = () => {
     };
 
     useEffect(() => { fetchStatus(); }, [uuid]);
+
     useEffect(() => {
+        // If the 'instant' param is present, fast-track the polling checks
+        // Midtrans webhook settlement takes about 2-3s fully finish.
+        const fastTrack = searchParams.get('instant') === '1';
         if (!polling) return;
-        const id = setInterval(fetchStatus, 3000);
+
+        const intervalMs = fastTrack ? 1500 : 3000;
+        const id = setInterval(fetchStatus, intervalMs);
         return () => clearInterval(id);
-    }, [polling]);
+    }, [polling, searchParams]);
 
     if (loading) {
         return (
