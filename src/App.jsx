@@ -10,6 +10,11 @@ import PlansPage from './pages/PlansPage';
 import PaymentStatusPage from './pages/PaymentStatusPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
+// Admin Pages
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import UsersPage from './pages/admin/UsersPage';
+import PaymentsPage from './pages/admin/PaymentsPage';
+
 function App() {
   return (
     <AuthProvider>
@@ -47,6 +52,32 @@ function App() {
               element={
                 <ProtectedRoute>
                   <PaymentStatusPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Admin Routes */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute adminOnly>
+                  <AdminDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute adminOnly>
+                  <UsersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/payments"
+              element={
+                <ProtectedRoute adminOnly>
+                  <PaymentsPage />
                 </ProtectedRoute>
               }
             />

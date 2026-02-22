@@ -26,7 +26,15 @@ const LoginPage = () => {
         try {
             const res = await login(loginValue, password);
             toast.success(`Selamat datang kembali, ${res.user?.name || 'Member'}! 🎉`);
-            navigate(from, { replace: true });
+
+            // Check if user has an admin role
+            const isAdmin = res.user?.roles?.some(role => role.name === 'admin');
+
+            if (isAdmin && from === '/dashboard') {
+                navigate('/admin', { replace: true });
+            } else {
+                navigate(from, { replace: true });
+            }
         } catch (err) {
             const msg = err.response?.data?.message || 'Login gagal. Periksa kembali email dan password Anda.';
             setError(msg);
