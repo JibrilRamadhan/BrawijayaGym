@@ -79,22 +79,32 @@ const PaymentStatusPage = () => {
             const newStatus = res?.status;
             const wasStillPending = prevStatusRef.current === 'pending' || prevStatusRef.current === null;
 
+            // Instant success override if coming directly from Midtrans onSuccess callback
+            const isInstantSuccess = searchParams.get('instant') === '1' && (newStatus === 'pending' || newStatus === 'settlement' || newStatus === 'capture');
+            const resolvedStatus = isInstantSuccess ? 'settlement' : newStatus;
+
             // Play sound when status transitions
-            if (!soundPlayedRef.current && wasStillPending) {
-                if (newStatus === 'settlement' || newStatus === 'capture') {
+            if (!soundPlayedRef.current && (wasStillPending || isInstantSuccess)) {
+                if (resolvedStatus === 'settlement' || resolvedStatus === 'capture') {
                     playSuccessSound();
                     soundPlayedRef.current = true;
                     // CRITICAL: Refresh user context to update is_guest and subscription data
                     await loadUser();
-                } else if (['failed', 'failure', 'deny', 'cancel', 'expire', 'expired'].includes(newStatus)) {
+                } else if (['failed', 'failure', 'deny', 'cancel', 'expire', 'expired'].includes(resolvedStatus)) {
                     playFailSound();
                     soundPlayedRef.current = true;
                 }
             }
 
-            prevStatusRef.current = newStatus;
-            setPolling(newStatus === 'pending');
-        } catch {
+            prevStatusRef.current = resolvedStatus;
+
+            // Override UI state if instant success is true
+            if (isInstantSuccess) {
+                res.status = 'settlement';
+            }
+
+            setPayment(res);
+            setPolling(resolvedStatus === 'pending');
             setError('Gagal memuat status.');
         } finally {
             setLoading(false);
@@ -107,7 +117,7 @@ const PaymentStatusPage = () => {
         // If the 'instant' param is present, fast-track the polling checks
         // Midtrans webhook settlement takes about 2-3s fully finish.
         const fastTrack = searchParams.get('instant') === '1';
-        if (!polling) return;
+        if (!polling && !fastTrack) return;
 
         const intervalMs = fastTrack ? 1500 : 3000;
         const id = setInterval(fetchStatus, intervalMs);
