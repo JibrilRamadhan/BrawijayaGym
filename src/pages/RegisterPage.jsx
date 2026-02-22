@@ -97,8 +97,8 @@ const RegisterPage = () => {
             setError("Jenis kelamin wajib dipilih untuk paket Member.");
             return;
         }
-        if (isMemberPlan && !formData.first_name.trim()) {
-            setError("Nama depan wajib diisi untuk paket Member.");
+        if (isMemberPlan && !formData.name.trim()) {
+            setError("Nama lengkap wajib diisi.");
             return;
         }
         setError('');
@@ -120,10 +120,15 @@ const RegisterPage = () => {
 
             // Step 2: Join plan
             const days = selectedPlan.type === 'harian' ? formData.days : null;
+
+            const nameParts = formData.name.trim().split(' ');
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+
             const memberData = isMemberPlan ? {
-                first_name: formData.first_name,
-                last_name: formData.last_name,
-                middle_name: formData.middle_name,
+                first_name: firstName,
+                last_name: lastName,
+                middle_name: '',
                 jenis_kelamin: formData.jenis_kelamin,
             } : null;
 
@@ -353,20 +358,6 @@ const RegisterPage = () => {
                                         <div className="border-t border-zinc-700 pt-5 mt-5">
                                             <p className="text-xs font-bold uppercase tracking-widest text-orange-400 mb-4">Data Member</p>
                                         </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Nama Depan *</label>
-                                                <input name="first_name" type="text" required className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none" placeholder="John" value={formData.first_name} onChange={handleChange} />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Nama Belakang</label>
-                                                <input name="last_name" type="text" className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none" placeholder="Doe" value={formData.last_name} onChange={handleChange} />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Nama Tengah <span className="text-gray-600">(opsional)</span></label>
-                                            <input name="middle_name" type="text" className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none" placeholder="" value={formData.middle_name} onChange={handleChange} />
-                                        </div>
                                         <div>
                                             <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Jenis Kelamin *</label>
                                             <select name="jenis_kelamin" required className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none appearance-none" value={formData.jenis_kelamin} onChange={handleChange}>
@@ -437,22 +428,6 @@ const RegisterPage = () => {
                                         <div className="border-t border-zinc-700 mt-3 pt-3">
                                             <p className="text-xs font-bold uppercase text-orange-400 mb-2">Data Member</p>
                                         </div>
-                                        <div className="flex justify-between mb-2">
-                                            <span className="text-gray-400">Nama Depan</span>
-                                            <span>{formData.first_name}</span>
-                                        </div>
-                                        {formData.last_name && (
-                                            <div className="flex justify-between mb-2">
-                                                <span className="text-gray-400">Nama Belakang</span>
-                                                <span>{formData.last_name}</span>
-                                            </div>
-                                        )}
-                                        {formData.middle_name && (
-                                            <div className="flex justify-between mb-2">
-                                                <span className="text-gray-400">Nama Tengah</span>
-                                                <span>{formData.middle_name}</span>
-                                            </div>
-                                        )}
                                         <div className="flex justify-between mb-2">
                                             <span className="text-gray-400">Jenis Kelamin</span>
                                             <span>{formData.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}</span>

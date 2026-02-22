@@ -39,7 +39,7 @@ const DashboardLayout = ({ children }) => {
 
                     {/* Desktop Nav */}
                     <nav className="hidden md:flex items-center gap-1">
-                        {navItems.map((item) => (
+                        {!user?.is_guest && navItems.map((item) => (
                             <Link
                                 key={item.path}
                                 to={item.path}
@@ -67,19 +67,21 @@ const DashboardLayout = ({ children }) => {
                 </div>
 
                 {/* Mobile Nav */}
-                <div className="md:hidden flex border-t border-zinc-900">
-                    {navItems.map((item) => (
-                        <Link
-                            key={item.path}
-                            to={item.path}
-                            className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-medium transition-all ${isActive(item.path) ? 'text-white border-b border-white' : 'text-gray-600'
-                                }`}
-                        >
-                            <item.icon className="w-3.5 h-3.5" />
-                            {item.label}
-                        </Link>
-                    ))}
-                </div>
+                {!user?.is_guest && (
+                    <div className="md:hidden flex border-t border-zinc-900">
+                        {navItems.map((item) => (
+                            <Link
+                                key={item.path}
+                                to={item.path}
+                                className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-medium transition-all ${isActive(item.path) ? 'text-white border-b border-white' : 'text-gray-600'
+                                    }`}
+                            >
+                                <item.icon className="w-3.5 h-3.5" />
+                                {item.label}
+                            </Link>
+                        ))}
+                    </div>
+                )}
             </header>
 
             {/* Content */}

@@ -103,7 +103,7 @@ const PaymentStatusPage = () => {
     useEffect(() => { fetchStatus(); }, [uuid]);
     useEffect(() => {
         if (!polling) return;
-        const id = setInterval(fetchStatus, 10000);
+        const id = setInterval(fetchStatus, 3000);
         return () => clearInterval(id);
     }, [polling]);
 
@@ -172,7 +172,7 @@ const PaymentStatusPage = () => {
                         {polling && (
                             <p className="text-yellow-600 text-sm flex items-center gap-2">
                                 <RefreshCw className="w-3 h-3 animate-spin" />
-                                Memeriksa setiap 10 detik...
+                                Memeriksa status pembayaran...
                             </p>
                         )}
                     </div>
@@ -211,7 +211,7 @@ const PaymentStatusPage = () => {
                                     <span className="text-green-400 font-bold text-sm uppercase">{receipt.subscription.status}</span>
                                 </div>
                             </div>
-                            {receipt?.email && (
+                            {receipt?.email && isMember && (
                                 <div className="mt-4 pt-4 border-t border-zinc-800">
                                     <p className="text-xs text-gray-500">Login dengan: <span className="text-white font-bold">{receipt.email}</span></p>
                                 </div>
