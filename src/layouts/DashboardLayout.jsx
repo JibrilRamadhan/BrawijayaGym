@@ -20,7 +20,7 @@ const DashboardLayout = ({ children }) => {
 
     const isActive = (path) => location.pathname === path;
 
-    const initial = (user?.username || '?')[0].toUpperCase();
+    const initial = (user?.name || '?')[0].toUpperCase();
 
     return (
         <div className="min-h-screen bg-black text-white">
@@ -39,8 +39,8 @@ const DashboardLayout = ({ children }) => {
                                 key={item.path}
                                 to={item.path}
                                 className={`px-4 py-2 text-sm font-medium transition-all ${isActive(item.path)
-                                        ? 'text-white bg-zinc-900'
-                                        : 'text-gray-500 hover:text-white'
+                                    ? 'text-white bg-zinc-900'
+                                    : 'text-gray-500 hover:text-white'
                                     }`}
                             >
                                 {item.label}

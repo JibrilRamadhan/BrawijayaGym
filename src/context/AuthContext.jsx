@@ -37,8 +37,8 @@ export const AuthProvider = ({ children }) => {
         loadUser();
     }, [loadUser]);
 
-    const login = async (loginValue, password) => {
-        const res = await authService.login(loginValue, password);
+    const login = async (email, password) => {
+        const res = await authService.login(email, password);
         const newToken = res.access_token;
         localStorage.setItem('auth_token', newToken);
         setToken(newToken);
@@ -46,8 +46,9 @@ export const AuthProvider = ({ children }) => {
         return res;
     };
 
-    const register = async (username, email, password) => {
-        const res = await authService.register(username, email, password);
+    const register = async (registerData) => {
+        // registerData = { email, name, phone, plan_type }
+        const res = await authService.register(registerData);
         const newToken = res.access_token;
         localStorage.setItem('auth_token', newToken);
         setToken(newToken);

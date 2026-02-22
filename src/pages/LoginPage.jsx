@@ -25,10 +25,10 @@ const LoginPage = () => {
 
         try {
             const res = await login(loginValue, password);
-            toast.success(`Selamat datang kembali, ${res.user?.username || 'Member'}! 🎉`);
+            toast.success(`Selamat datang kembali, ${res.user?.name || 'Member'}! 🎉`);
             navigate(from, { replace: true });
         } catch (err) {
-            const msg = err.response?.data?.message || 'Login gagal. Periksa kembali email/username dan password Anda.';
+            const msg = err.response?.data?.message || 'Login gagal. Periksa kembali email dan password Anda.';
             setError(msg);
             toast.error(msg);
         } finally {
@@ -102,7 +102,7 @@ const LoginPage = () => {
                         <div className="space-y-5">
                             <div>
                                 <label htmlFor="login-field" className="block text-sm font-bold uppercase tracking-wide text-gray-400 mb-2">
-                                    Email atau Username
+                                    Email
                                 </label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -110,12 +110,12 @@ const LoginPage = () => {
                                     </div>
                                     <input
                                         id="login-field"
-                                        name="login"
-                                        type="text"
-                                        autoComplete="username"
+                                        name="email"
+                                        type="email"
+                                        autoComplete="email"
                                         required
                                         className="block w-full pl-11 pr-4 py-3.5 border-2 border-zinc-800 rounded-none leading-5 bg-zinc-900 placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-0 sm:text-sm transition-all text-white font-medium hover:border-zinc-700"
-                                        placeholder="email atau username"
+                                        placeholder="email@example.com"
                                         value={loginValue}
                                         onChange={(e) => setLoginValue(e.target.value)}
                                     />

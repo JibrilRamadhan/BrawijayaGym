@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, Lock, Eye, EyeOff, Loader2, ArrowLeft, CheckCircle, Calendar, Shield, Zap, Crown, Phone } from 'lucide-react';
+import { Mail, Loader2, ArrowLeft, CheckCircle, Calendar, Shield, Zap, Crown, Phone, Info } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -43,15 +43,12 @@ const RegisterPage = () => {
     const [plans, setPlans] = useState([]);
     const [plansLoading, setPlansLoading] = useState(true);
 
-    // Form State
+    // Form State — no username/password for trial/harian
     const [formData, setFormData] = useState({
-        username: '',
         name: '',
         email: '',
         emailConfirm: '',
         phone: '',
-        password: '',
-        confirmPassword: '',
         days: 1,
         // Member-specific fields
         first_name: '',
@@ -59,7 +56,6 @@ const RegisterPage = () => {
         middle_name: '',
         jenis_kelamin: '',
     });
-    const [showPassword, setShowPassword] = useState(false);
 
     // Success Data
     const [successData, setSuccessData] = useState(null);
@@ -97,14 +93,6 @@ const RegisterPage = () => {
             setError("Email tidak sama! Silakan ketik ulang.");
             return;
         }
-        if (formData.password !== formData.confirmPassword) {
-            setError("Password tidak sama!");
-            return;
-        }
-        if (formData.password.length < 8) {
-            setError("Password minimal 8 karakter!");
-            return;
-        }
         if (isMemberPlan && !formData.jenis_kelamin) {
             setError("Jenis kelamin wajib dipilih untuk paket Member.");
             return;
@@ -122,8 +110,13 @@ const RegisterPage = () => {
         setError('');
 
         try {
-            // Step 1: Register user
-            await register(formData.username, formData.email, formData.password);
+            // Step 1: Register user (no password for trial/harian, auto-generated for member)
+            await register({
+                email: formData.email,
+                name: formData.name,
+                phone: formData.phone,
+                plan_type: selectedPlan.type,
+            });
 
             // Step 2: Join plan
             const days = selectedPlan.type === 'harian' ? formData.days : null;
@@ -144,7 +137,6 @@ const RegisterPage = () => {
 
             if (selectedPlan.type === 'trial' || selectedPlan.price === 0) {
                 // Trial — instant success
-                // Refresh user context to get updated is_guest & subscription
                 await loadUser();
                 playSuccessSound();
                 setSuccessData({
@@ -293,7 +285,7 @@ const RegisterPage = () => {
                         </div>
                     )}
 
-                    {/* STEP 2: USER FORM */}
+                    {/* STEP 2: USER FORM — No username/password for trial & harian */}
                     {step === 2 && (
                         <div className="max-w-md mx-auto bg-zinc-900 p-8 border border-zinc-800">
                             <button onClick={() => { setStep(1); setError(''); }} className="flex items-center text-gray-400 hover:text-white mb-6">
@@ -308,6 +300,22 @@ const RegisterPage = () => {
                                 </div>
                             )}
 
+                            {/* Info: Password dikirim via email untuk member */}
+                            {isMemberPlan && (
+                                <div className="bg-blue-500/10 border border-blue-500/30 text-blue-300 p-3 mb-6 text-sm">
+                                    <Info className="w-4 h-4 inline mr-2" />
+                                    Password akan <strong>di-generate otomatis</strong> dan dikirim ke email Anda.
+                                </div>
+                            )}
+
+                            {/* Info: Trial/Harian tanpa password */}
+                            {!isMemberPlan && (
+                                <div className="bg-green-500/10 border border-green-500/30 text-green-300 p-3 mb-6 text-sm">
+                                    <Info className="w-4 h-4 inline mr-2" />
+                                    Paket <strong>{selectedPlan?.type === 'trial' ? 'Trial' : 'Harian'}</strong> tidak memerlukan password.
+                                </div>
+                            )}
+
                             {error && (
                                 <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 mb-4 text-sm">
                                     {error}
@@ -315,18 +323,17 @@ const RegisterPage = () => {
                             )}
 
                             <form onSubmit={handleRegisterSubmit} className="space-y-5">
-                                <div>
-                                    <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Username</label>
-                                    <input name="username" type="text" required className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none" placeholder="username" value={formData.username} onChange={handleChange} />
-                                </div>
+                                {/* Nama Lengkap — always required */}
                                 <div>
                                     <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Nama Lengkap</label>
                                     <input name="name" type="text" required className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none" placeholder="John Doe" value={formData.name} onChange={handleChange} />
                                 </div>
+                                {/* Email — always required */}
                                 <div>
                                     <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Email</label>
                                     <input name="email" type="email" required className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none" placeholder="email@example.com" value={formData.email} onChange={handleChange} />
                                 </div>
+                                {/* Konfirmasi Email — always required */}
                                 <div>
                                     <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Konfirmasi Email</label>
                                     <input name="emailConfirm" type="email" required className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none" placeholder="Ketik ulang email" value={formData.emailConfirm} onChange={handleChange} />
@@ -334,6 +341,7 @@ const RegisterPage = () => {
                                         <p className="text-red-400 text-xs mt-1">Email tidak cocok</p>
                                     )}
                                 </div>
+                                {/* No. Telepon — always required */}
                                 <div>
                                     <label className="block text-sm font-bold uppercase text-gray-400 mb-2">No. Telepon</label>
                                     <input name="phone" type="tel" required className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none" placeholder="08xxxxxxxxxx" value={formData.phone} onChange={handleChange} />
@@ -370,25 +378,16 @@ const RegisterPage = () => {
                                     </>
                                 )}
 
-                                <div>
-                                    <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Password</label>
-                                    <div className="relative">
-                                        <input name="password" type={showPassword ? "text" : "password"} required minLength={8} className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none pr-12" placeholder="••••••••" value={formData.password} onChange={handleChange} />
-                                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
-                                            {showPassword ? <EyeOff className="w-4 h-4 text-gray-500" /> : <Eye className="w-4 h-4 text-gray-500" />}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Konfirmasi Password</label>
-                                    <input name="confirmPassword" type="password" required className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none" placeholder="••••••••" value={formData.confirmPassword} onChange={handleChange} />
-                                </div>
+                                {/* Jumlah Hari — only for harian */}
                                 {selectedPlan?.type === 'harian' && (
                                     <div>
                                         <label className="block text-sm font-bold uppercase text-gray-400 mb-2">Jumlah Hari</label>
                                         <input name="days" type="number" min="1" required className="w-full bg-black border border-zinc-700 p-3 text-white focus:border-orange-500 outline-none" value={formData.days} onChange={(e) => setFormData({ ...formData, days: parseInt(e.target.value) || 1 })} />
                                     </div>
                                 )}
+
+                                {/* NO password fields — removed for all plan types */}
+
                                 <button type="submit" className="w-full py-4 bg-orange-600 hover:bg-orange-500 font-bold uppercase tracking-widest transition-all mt-4">
                                     Lanjut ke Konfirmasi
                                 </button>
@@ -418,10 +417,6 @@ const RegisterPage = () => {
                                 <div className="flex justify-between mb-2">
                                     <span className="text-gray-400">Durasi</span>
                                     <span>{getDurationLabel(selectedPlan)}{selectedPlan?.type === 'harian' ? ` (${formData.days} hari)` : ''}</span>
-                                </div>
-                                <div className="flex justify-between mb-2">
-                                    <span className="text-gray-400">Username</span>
-                                    <span>{formData.username}</span>
                                 </div>
                                 <div className="flex justify-between mb-2">
                                     <span className="text-gray-400">Nama</span>
@@ -463,6 +458,16 @@ const RegisterPage = () => {
                                             <span>{formData.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}</span>
                                         </div>
                                     </>
+                                )}
+
+                                {/* Password info */}
+                                {isMemberPlan && (
+                                    <div className="border-t border-zinc-700 mt-3 pt-3">
+                                        <div className="flex items-start gap-2 text-blue-400 text-sm">
+                                            <Mail className="w-4 h-4 mt-0.5 shrink-0" />
+                                            <span>Password akan dikirim ke email <strong>{formData.email}</strong></span>
+                                        </div>
+                                    </div>
                                 )}
 
                                 <div className="border-t border-gray-700 pt-4 mt-4 flex justify-between items-center">
@@ -527,15 +532,21 @@ const RegisterPage = () => {
                                 </div>
 
                                 <div className="border-t-2 border-dashed border-gray-300 py-4">
-                                    <p className="text-xs text-gray-400 text-center">Kredensial login: <strong>{formData.email}</strong></p>
-                                    <p className="text-xs text-gray-400 text-center mt-1">Simpan password Anda dengan baik.</p>
+                                    {isMemberPlan ? (
+                                        <>
+                                            <p className="text-xs text-blue-600 text-center font-bold">📧 Password login telah dikirim ke email Anda</p>
+                                            <p className="text-xs text-gray-400 text-center mt-1">Cek inbox email <strong>{formData.email}</strong></p>
+                                        </>
+                                    ) : (
+                                        <p className="text-xs text-gray-400 text-center">Paket {successData.planType === 'trial' ? 'Trial' : 'Harian'} tidak memerlukan login.</p>
+                                    )}
                                 </div>
 
                                 <button
-                                    onClick={() => navigate('/dashboard')}
+                                    onClick={() => navigate(isMemberPlan ? '/login' : '/dashboard')}
                                     className="w-full mt-4 py-3 bg-black text-white font-bold uppercase hover:bg-gray-800 transition-colors"
                                 >
-                                    {successData.planType === 'member' ? 'Ke Dashboard Member' : 'Masuk ke Dashboard'}
+                                    {isMemberPlan ? 'Login ke Dashboard' : 'Masuk ke Dashboard'}
                                 </button>
                             </div>
                         </div>

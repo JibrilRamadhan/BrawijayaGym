@@ -110,10 +110,10 @@ const MembershipChart = ({ subscription }) => {
                                     key={i}
                                     title={`Hari ${i + 1}`}
                                     className={`w-4 h-4 rounded-sm transition-all ${isToday
-                                            ? 'bg-orange-500 ring-2 ring-orange-400 ring-offset-1 ring-offset-zinc-900'
-                                            : isPast
-                                                ? 'bg-zinc-600'
-                                                : 'bg-zinc-800'
+                                        ? 'bg-orange-500 ring-2 ring-orange-400 ring-offset-1 ring-offset-zinc-900'
+                                        : isPast
+                                            ? 'bg-zinc-600'
+                                            : 'bg-zinc-800'
                                         }`}
                                 />
                             );
@@ -165,7 +165,7 @@ const DashboardPage = () => {
     const hour = new Date().getHours();
     const greeting = hour < 12 ? 'Pagi' : hour < 15 ? 'Siang' : hour < 18 ? 'Sore' : 'Malam';
 
-    const initial = (user?.username || '?')[0].toUpperCase();
+    const initial = (user?.name || '?')[0].toUpperCase();
     const hasSubscription = !!user?.subscription;
     const isMember = !user?.is_guest;
 
@@ -187,7 +187,7 @@ const DashboardPage = () => {
                             </p>
                             <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight leading-[0.9]">
                                 Selamat {greeting},<br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">{user?.username}</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">{user?.name}</span>
                             </h1>
                         </div>
 
@@ -196,7 +196,7 @@ const DashboardPage = () => {
                                 {initial}
                             </div>
                             <div>
-                                <p className="font-bold text-sm">{user?.username}</p>
+                                <p className="font-bold text-sm">{user?.name}</p>
                                 <p className="text-gray-500 text-xs">{user?.email}</p>
                             </div>
                         </div>
@@ -267,7 +267,7 @@ const DashboardPage = () => {
                     className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
                 >
                     {[
-                        { label: 'Username', value: user?.username },
+                        { label: 'Nama', value: user?.name },
                         { label: 'Email', value: user?.email },
                         { label: 'Tipe', value: isMember ? 'Member' : 'Non-Member' },
                         { label: 'Paket', value: user?.subscription?.plan_name || 'Belum ada' },
