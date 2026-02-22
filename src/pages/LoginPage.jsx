@@ -74,11 +74,12 @@ const LoginPage = () => {
 
             {/* Right Side - Form */}
             <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-16 relative bg-black">
-                <Link to="/" className="absolute top-8 left-8 lg:hidden text-gray-400 hover:text-white transition-colors">
-                    <ArrowLeft className="w-6 h-6" />
-                </Link>
+                <div className="w-full max-w-md space-y-8">
+                    <Link to="/" className="inline-flex items-center text-gray-400 hover:text-white transition-colors mb-2">
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        <span className="text-sm font-bold uppercase tracking-wider">Kembali</span>
+                    </Link>
 
-                <div className="w-full max-w-md space-y-10">
                     <div className="text-center lg:text-left">
                         <h2 className="text-4xl font-display font-black text-white uppercase tracking-tighter">
                             Welcome Back
