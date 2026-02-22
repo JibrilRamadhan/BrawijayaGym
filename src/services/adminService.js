@@ -12,6 +12,10 @@ const adminService = {
     async getPayments() {
         const response = await api.get('/admin/payments');
         return response.data;
+    },
+    async toggleUserStatus(userId) {
+        const response = await api.patch(`/admin/users/${userId}/toggle-status`);
+        return response.data;
     }
 };
 

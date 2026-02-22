@@ -65,7 +65,9 @@ const UsersPage = () => {
                                     <tr className="bg-zinc-950 text-xs uppercase text-zinc-500 font-medium">
                                         <th className="px-6 py-4 border-b border-zinc-800">User Info</th>
                                         <th className="px-6 py-4 border-b border-zinc-800">Type</th>
+                                        <th className="px-6 py-4 border-b border-zinc-800">Status</th>
                                         <th className="px-6 py-4 border-b border-zinc-800">Joined</th>
+                                        <th className="px-6 py-4 border-b border-zinc-800 text-right">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -89,14 +91,33 @@ const UsersPage = () => {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border ${isGuest
-                                                            ? 'bg-zinc-800 border-zinc-700 text-zinc-300'
-                                                            : 'bg-blue-500/10 border-blue-500/20 text-blue-400'
+                                                        ? 'bg-zinc-800 border-zinc-700 text-zinc-300'
+                                                        : 'bg-blue-500/10 border-blue-500/20 text-blue-400'
                                                         }`}>
                                                         {isGuest ? 'Guest' : 'Member'}
                                                     </span>
                                                 </td>
+                                                <td className="px-6 py-4">
+                                                    <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border ${user.is_active
+                                                            ? 'bg-green-500/10 border-green-500/20 text-green-400'
+                                                            : 'bg-red-500/10 border-red-500/20 text-red-500'
+                                                        }`}>
+                                                        {user.is_active ? 'Active' : 'Deactivated'}
+                                                    </span>
+                                                </td>
                                                 <td className="px-6 py-4 text-sm text-zinc-400 font-medium">
                                                     {new Date(user.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                                </td>
+                                                <td className="px-6 py-4 text-right">
+                                                    <button
+                                                        onClick={() => toggleUserStatus(user.id, user.is_active)}
+                                                        className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-colors ${user.is_active
+                                                                ? 'border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white'
+                                                                : 'border-green-500/50 text-green-500 hover:bg-green-500 hover:text-white'
+                                                            }`}
+                                                    >
+                                                        {user.is_active ? 'Ban Account' : 'Reactivate'}
+                                                    </button>
                                                 </td>
                                             </motion.tr>
                                         );

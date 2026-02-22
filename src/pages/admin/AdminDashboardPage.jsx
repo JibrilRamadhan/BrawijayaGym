@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, CreditCard, DollarSign, Activity } from 'lucide-react';
+import { Users, CreditCard, DollarSign, Activity, TrendingUp } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import adminService from '../../services/adminService';
 import AdminLayout from '../../layouts/AdminLayout';
 
@@ -8,7 +9,8 @@ const AdminDashboardPage = () => {
     const [stats, setStats] = useState({
         total_users: 0,
         total_revenue: 0,
-        recent_payments: []
+        recent_payments: [],
+        chart_data: []
     });
     const [loading, setLoading] = useState(true);
 
@@ -75,6 +77,43 @@ const AdminDashboardPage = () => {
                         );
                     })}
                 </div>
+
+                {/* Analytics Chart */}
+                {stats.chart_data && stats.chart_data.length > 0 && (
+                    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 mt-8">
+                        <div className="flex items-center gap-2 mb-6">
+                            <TrendingUp className="w-5 h-5 text-orange-500" />
+                            <h2 className="font-bold text-xl text-white">Revenue Overview (Last 7 Days)</h2>
+                        </div>
+                        <div className="h-[300px] w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={stats.chart_data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                    <defs>
+                                        <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                                            <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                                    <XAxis dataKey="date" stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis
+                                        stroke="#71717a"
+                                        fontSize={12}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        tickFormatter={(value) => `Rp${(value / 1000)}k`}
+                                    />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px', color: '#fff' }}
+                                        itemStyle={{ color: '#10b981' }}
+                                        formatter={(value) => [formatRupiah(value), 'Revenue']}
+                                    />
+                                    <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                )}
 
                 {/* Recent Transactions */}
                 <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden mt-8">
